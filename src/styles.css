@@ -32,12 +32,11 @@ nav button.active { background: #1a1a2e; color: #fff; }
   z-index: 20;
   min-width: 220px;
   max-width: 320px;
-  background: #1a1a2e;
-  border: 1px solid #3a3a52;
+  background: #fff;
+  border: 1px solid #e3e6ea;
   border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   padding: 8px;
-  color: #fff;
 }
 .checkbox-filter-search {
   width: 100%;
@@ -45,17 +44,14 @@ nav button.active { background: #1a1a2e; color: #fff; }
   margin-bottom: 6px;
   font: inherit;
   font-size: 13px;
-  color: #fff;
-  background: #111;
-  border: 1px solid #4a4a66;
+  border: 1px solid #ccc;
   border-radius: 6px;
 }
-.checkbox-filter-search::placeholder { color: #a0a0b8; }
 .checkbox-filter-actions { display: flex; justify-content: flex-end; margin-bottom: 4px; }
 .checkbox-filter-clear {
   background: none;
   border: none;
-  color: #8ab4ff;
+  color: #4a5bd4;
   font-size: 12px;
   cursor: pointer;
   padding: 2px 4px;
@@ -70,12 +66,11 @@ nav button.active { background: #1a1a2e; color: #fff; }
   font-size: 13px;
   border-radius: 4px;
   cursor: pointer;
-  color: #fff;
 }
-.checkbox-row:hover { background: #2c2c46; }
-.checkbox-row.selected { background: #33335a; font-weight: 600; }
+.checkbox-row:hover { background: #f2f3f7; }
+.checkbox-row.selected { background: #eef0fc; font-weight: 600; }
 .checkbox-row input { cursor: pointer; }
-.checkbox-filter-empty { padding: 6px; font-size: 13px; color: #b8b8cc; }
+.checkbox-filter-empty { padding: 6px; font-size: 13px; color: #667; }
 .kpis { display: flex; flex-wrap: wrap; gap: 12px; }
 .kpi { background: #fff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 12px 16px; min-width: 130px; }
 .kpi .value { font-size: 24px; font-weight: 700; }
@@ -84,3 +79,12 @@ table { width: 100%; border-collapse: collapse; background: #fff; }
 th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #eee; font-size: 13px; }
 th { cursor: pointer; }
 .card { background: #fff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 12px; margin: 12px 0; }
+.chart-tooltip {
+  background: #1a1a2e;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  font-size: 13px;
+  margin: 0;
+}

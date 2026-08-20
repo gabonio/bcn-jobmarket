@@ -4,6 +4,7 @@ import {
 } from "recharts";
 import { Posting } from "../data/types";
 import { countBy, distinct, topCompaniesForCraft } from "../data/aggregate";
+import { TOOLTIP_CONTENT_STYLE, TOOLTIP_ITEM_STYLE, TOOLTIP_LABEL_STYLE } from "../chartTheme";
 
 export function RolesCrafts({ postings }: { postings: Posting[] }) {
   const crafts = useMemo(() => distinct(postings, (p) => p.craft).sort(), [postings]);
@@ -26,7 +27,7 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={craftCounts.sort((a, b) => b.count - a.count)}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="craft" angle={-30} textAnchor="end" height={70} /><YAxis /><Tooltip />
+            <XAxis dataKey="craft" angle={-30} textAnchor="end" height={70} /><YAxis /><Tooltip contentStyle={TOOLTIP_CONTENT_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
             <Bar dataKey="count" fill="#4c6ef5" />
           </BarChart>
         </ResponsiveContainer>

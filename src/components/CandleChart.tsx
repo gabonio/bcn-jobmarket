@@ -94,7 +94,7 @@ function CandleTooltip({ active, payload, label, years }: any) {
   if (!active || !payload?.length) return null;
   const row = payload[0].payload;
   return (
-    <div className="card" style={{ margin: 0 }}>
+    <div className="chart-tooltip">
       <strong>{label}</strong>
       {years.map((y: number) => row[`y${y}_median`] != null && (
         <div key={y} style={{ color: colorForYear(y) }}>

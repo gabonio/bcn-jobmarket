@@ -54,7 +54,7 @@ function RangeTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   return (
-    <div className="card" style={{ margin: 0 }}>
+    <div className="chart-tooltip">
       <strong>{d.key}</strong>
       <div>median {eurK(d.median)}</div>
       <div>p25 {eurK(d.base)} – p75 {eurK(d.base + d.band)}</div>

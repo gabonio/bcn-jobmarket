@@ -4,6 +4,7 @@ import {
 import { Posting } from "../data/types";
 import { companyLeaderboard, countBy, distinct, percentiles } from "../data/aggregate";
 import { eurK } from "../format";
+import { TOOLTIP_CONTENT_STYLE, TOOLTIP_ITEM_STYLE, TOOLTIP_LABEL_STYLE } from "../chartTheme";
 
 export function Overview({ postings }: { postings: Posting[] }) {
   const companies = distinct(postings, (p) => p.company).length;
@@ -30,7 +31,7 @@ export function Overview({ postings }: { postings: Posting[] }) {
           <BarChart data={craftMix}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="craft" angle={-30} textAnchor="end" height={70} />
-            <YAxis /><Tooltip />
+            <YAxis /><Tooltip contentStyle={TOOLTIP_CONTENT_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
             <Bar dataKey="count" fill="#4c6ef5" />
           </BarChart>
         </ResponsiveContainer>
@@ -40,7 +41,7 @@ export function Overview({ postings }: { postings: Posting[] }) {
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={modalityMix}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="modality" /><YAxis /><Tooltip />
+            <XAxis dataKey="modality" /><YAxis /><Tooltip contentStyle={TOOLTIP_CONTENT_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
             <Bar dataKey="count" fill="#12b886" />
           </BarChart>
         </ResponsiveContainer>
