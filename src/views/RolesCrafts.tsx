@@ -5,7 +5,7 @@ import {
 import { Posting } from "../data/types";
 import { countBy, distinct, topCompaniesForCraft } from "../data/aggregate";
 import { TOOLTIP_CONTENT_STYLE, TOOLTIP_ITEM_STYLE, TOOLTIP_LABEL_STYLE } from "../chartTheme";
-import { eur, monthYear } from "../format";
+import { eur, levelName, monthYear } from "../format";
 
 const ROLE_MATCH_CAP = 200;
 type SortKey = "date" | "role" | "company" | "craft" | "level" | "lowEur" | "midEur" | "highEur";
@@ -120,7 +120,7 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
           </thead>
           <tbody>{roleMatches.map((p, i) =>
             <tr key={i}>
-              <td>{monthYear(p.year, p.month)}</td><td>{p.role}</td><td>{p.company}</td><td>{p.craft}</td><td>{p.level}</td>
+              <td>{monthYear(p.year, p.month)}</td><td>{p.role}</td><td>{p.company}</td><td>{p.craft}</td><td>{levelName(p.level)}</td>
               <td>{eur(p.lowEur)}</td><td>{eur(p.midEur)}</td><td>{eur(p.highEur)}</td>
             </tr>)}
           </tbody>

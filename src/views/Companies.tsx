@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Posting } from "../data/types";
 import { companyLeaderboard } from "../data/aggregate";
-import { eur, eurK } from "../format";
+import { eur, eurK, levelName } from "../format";
 
 type SortKey = "company" | "count" | "medianComp";
 type SortDirection = "asc" | "desc";
@@ -89,7 +89,7 @@ export function Companies({ postings }: { postings: Posting[] }) {
               {detail.map((p, i) => (
                 <tr key={i}>
                   <td>{p.date ? p.date.toLocaleDateString("en-CA") : "—"}</td>
-                  <td>{p.role}</td><td>{p.craft}</td><td>{p.level}</td><td>{p.modality}</td>
+                  <td>{p.role}</td><td>{p.craft}</td><td>{levelName(p.level)}</td><td>{p.modality}</td>
                   <td>{eur(p.lowEur)}</td><td>{eur(p.midEur)}</td><td>{eur(p.highEur)}</td>
                 </tr>
               ))}

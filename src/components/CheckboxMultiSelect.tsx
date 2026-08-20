@@ -6,6 +6,7 @@ interface Props {
   selected: string[];
   onChange: (v: string[]) => void;
   searchable?: boolean;
+  formatOption?: (option: string) => string;
 }
 
 export function toggleValue(selected: string[], value: string): string[] {
@@ -20,7 +21,7 @@ export function filterOptions(list: string[], query: string): string[] {
   return list.filter((o) => o.toLowerCase().includes(q));
 }
 
-export function CheckboxMultiSelect({ label, options, selected, onChange, searchable }: Props) {
+export function CheckboxMultiSelect({ label, options, selected, onChange, searchable, formatOption }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const rootRef = useRef<HTMLDivElement>(null);
@@ -73,7 +74,7 @@ export function CheckboxMultiSelect({ label, options, selected, onChange, search
                   checked={selected.includes(o)}
                   onChange={() => onChange(toggleValue(selected, o))}
                 />
-                <span>{o}</span>
+                <span>{formatOption ? formatOption(o) : o}</span>
               </label>
             ))}
             {visibleOptions.length === 0 && (
