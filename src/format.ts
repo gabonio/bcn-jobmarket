@@ -45,3 +45,11 @@ export function levelName(level: string): string {
   const normalized = level.trim().toUpperCase().replace(/^(IC|M|P)(\d+)$/, "$1-$2");
   return LEVEL_NAMES[normalized] ?? level;
 }
+
+export function levelGroup(level: string): string {
+  const normalized = level.trim().toUpperCase();
+  if (normalized.startsWith("IC-")) return "IC";
+  if (normalized.startsWith("M-")) return "Management";
+  if (normalized.startsWith("P-")) return "Product";
+  return "Other";
+}

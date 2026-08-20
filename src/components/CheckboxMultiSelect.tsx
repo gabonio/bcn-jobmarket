@@ -7,6 +7,7 @@ interface Props {
   onChange: (v: string[]) => void;
   searchable?: boolean;
   formatOption?: (option: string) => string;
+  groupOption?: (option: string) => string;
 }
 
 export function toggleValue(selected: string[], value: string): string[] {
@@ -21,7 +22,7 @@ export function filterOptions(list: string[], query: string): string[] {
   return list.filter((o) => o.toLowerCase().includes(q));
 }
 
-export function CheckboxMultiSelect({ label, options, selected, onChange, searchable, formatOption }: Props) {
+export function CheckboxMultiSelect({ label, options, selected, onChange, searchable, formatOption, groupOption }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const rootRef = useRef<HTMLDivElement>(null);
@@ -67,15 +68,20 @@ export function CheckboxMultiSelect({ label, options, selected, onChange, search
             </button>
           </div>
           <div className="checkbox-filter-list">
-            {visibleOptions.map((o) => (
-              <label key={o} className={selected.includes(o) ? "checkbox-row selected" : "checkbox-row"}>
-                <input
-                  type="checkbox"
-                  checked={selected.includes(o)}
-                  onChange={() => onChange(toggleValue(selected, o))}
-                />
-                <span>{formatOption ? formatOption(o) : o}</span>
-              </label>
+            {visibleOptions.map((o, index) => (
+              <div key={o}>
+                {groupOption && (index === 0 || groupOption(visibleOptions[index - 1]) !== groupOption(o)) && (
+                  <div className="checkbox-filter-group-label">— {groupOption(o)} —</div>
+                )}
+                <label className={selected.includes(o) ? "checkbox-row selected" : "checkbox-row"}>
+                  <input
+                    type="checkbox"
+                    checked={selected.includes(o)}
+                    onChange={() => onChange(toggleValue(selected, o))}
+                  />
+                  <span>{formatOption ? formatOption(o) : o}</span>
+                </label>
+              </div>
             ))}
             {visibleOptions.length === 0 && (
               <div className="checkbox-filter-empty">No matches</div>
