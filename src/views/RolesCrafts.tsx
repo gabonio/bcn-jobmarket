@@ -5,6 +5,9 @@ import {
 import { Posting } from "../data/types";
 import { countBy, distinct, topCompaniesForCraft } from "../data/aggregate";
 import { TOOLTIP_CONTENT_STYLE, TOOLTIP_ITEM_STYLE, TOOLTIP_LABEL_STYLE } from "../chartTheme";
+import { eur } from "../format";
+
+const ROLE_MATCH_CAP = 200;
 
 export function RolesCrafts({ postings }: { postings: Posting[] }) {
   const crafts = useMemo(() => distinct(postings, (p) => p.craft).sort(), [postings]);
@@ -16,9 +19,11 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
   // (same class of bug fixed in Task 6 for the Overview).
   const craftCounts = countBy(postings, "craft").map((d) => ({ craft: d.key, count: d.count }));
   const top = craft ? topCompaniesForCraft(postings, craft).slice(0, 15) : [];
-  const roleMatches = q
-    ? postings.filter((p) => p.role.toLowerCase().includes(q.toLowerCase())).slice(0, 50)
-    : [];
+  const roleMatchesAll = q
+    ? postings.filter((p) => p.role.toLowerCase().includes(q.toLowerCase()))
+    : postings;
+  const roleMatches = roleMatchesAll.slice(0, ROLE_MATCH_CAP);
+  const roleMatchesShown = Math.min(roleMatchesAll.length, ROLE_MATCH_CAP);
 
   return (
     <div>
@@ -46,10 +51,18 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
       <div className="card">
         <h3>Role search</h3>
         <input placeholder="e.g. staff, platform, ML…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <p>
+          {roleMatchesAll.length > ROLE_MATCH_CAP
+            ? `showing first ${ROLE_MATCH_CAP} of ${roleMatchesAll.length} roles`
+            : `${roleMatchesShown} of ${roleMatchesAll.length} roles`}
+        </p>
         <table>
-          <thead><tr><th>Role</th><th>Company</th><th>Craft</th><th>Level</th></tr></thead>
+          <thead><tr><th>Role</th><th>Company</th><th>Craft</th><th>Level</th><th>Low</th><th>Mid</th><th>High</th></tr></thead>
           <tbody>{roleMatches.map((p, i) =>
-            <tr key={i}><td>{p.role}</td><td>{p.company}</td><td>{p.craft}</td><td>{p.level}</td></tr>)}
+            <tr key={i}>
+              <td>{p.role}</td><td>{p.company}</td><td>{p.craft}</td><td>{p.level}</td>
+              <td>{eur(p.lowEur)}</td><td>{eur(p.midEur)}</td><td>{eur(p.highEur)}</td>
+            </tr>)}
           </tbody>
         </table>
       </div>

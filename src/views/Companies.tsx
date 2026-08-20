@@ -46,13 +46,13 @@ export function Companies({ postings }: { postings: Posting[] }) {
         <div className="card">
           <h3>{selected} — {detail.length} postings <button onClick={() => setSelected(null)}>close</button></h3>
           <table>
-            <thead><tr><th>Date</th><th>Role</th><th>Craft</th><th>Level</th><th>Modality</th><th>Mid</th></tr></thead>
+            <thead><tr><th>Date</th><th>Role</th><th>Craft</th><th>Level</th><th>Modality</th><th>Low</th><th>Mid</th><th>High</th></tr></thead>
             <tbody>
               {detail.map((p, i) => (
                 <tr key={i}>
                   <td>{p.date ? p.date.toLocaleDateString("en-CA") : "—"}</td>
                   <td>{p.role}</td><td>{p.craft}</td><td>{p.level}</td><td>{p.modality}</td>
-                  <td>{eur(p.midEur)}</td>
+                  <td>{eur(p.lowEur)}</td><td>{eur(p.midEur)}</td><td>{eur(p.highEur)}</td>
                 </tr>
               ))}
             </tbody>
