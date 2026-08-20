@@ -5,14 +5,53 @@ import {
 import { Posting } from "../data/types";
 import { countBy, distinct, topCompaniesForCraft } from "../data/aggregate";
 import { TOOLTIP_CONTENT_STYLE, TOOLTIP_ITEM_STYLE, TOOLTIP_LABEL_STYLE } from "../chartTheme";
-import { eur } from "../format";
+import { eur, monthYear } from "../format";
 
 const ROLE_MATCH_CAP = 200;
+type SortKey = "date" | "role" | "company" | "craft" | "level" | "lowEur" | "midEur" | "highEur";
+type SortDirection = "asc" | "desc";
+
+const SORT_HEADERS: { key: SortKey; label: string }[] = [
+  { key: "date", label: "Date" },
+  { key: "role", label: "Role" },
+  { key: "company", label: "Company" },
+  { key: "craft", label: "Craft" },
+  { key: "level", label: "Level" },
+  { key: "lowEur", label: "Low" },
+  { key: "midEur", label: "Mid" },
+  { key: "highEur", label: "High" },
+];
+
+function sortValue(posting: Posting, key: SortKey): string | number | null {
+  if (key === "date") {
+    return posting.year != null && posting.month != null
+      ? posting.year * 12 + posting.month
+      : null;
+  }
+  return posting[key] ?? null;
+}
+
+function comparePostings(a: Posting, b: Posting, key: SortKey, direction: SortDirection): number {
+  const aValue = sortValue(a, key);
+  const bValue = sortValue(b, key);
+  const aMissing = aValue == null || aValue === "";
+  const bMissing = bValue == null || bValue === "";
+  if (aMissing || bMissing) {
+    if (aMissing && bMissing) return 0;
+    return aMissing ? 1 : -1;
+  }
+  const comparison = typeof aValue === "number" && typeof bValue === "number"
+    ? aValue - bValue
+    : String(aValue).localeCompare(String(bValue), undefined, { sensitivity: "base" });
+  return direction === "asc" ? comparison : -comparison;
+}
 
 export function RolesCrafts({ postings }: { postings: Posting[] }) {
   const crafts = useMemo(() => distinct(postings, (p) => p.craft).sort(), [postings]);
   const [craft, setCraft] = useState<string>(crafts[0] ?? "");
   const [q, setQ] = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   // Use countBy (not compBy) so postings without a midEur value are still
   // counted — compBy drops comp-less rows, which would undercount crafts
@@ -22,8 +61,19 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
   const roleMatchesAll = q
     ? postings.filter((p) => p.role.toLowerCase().includes(q.toLowerCase()))
     : postings;
-  const roleMatches = roleMatchesAll.slice(0, ROLE_MATCH_CAP);
+  const roleMatches = [...roleMatchesAll]
+    .sort((a, b) => comparePostings(a, b, sortKey, sortDirection))
+    .slice(0, ROLE_MATCH_CAP);
   const roleMatchesShown = Math.min(roleMatchesAll.length, ROLE_MATCH_CAP);
+
+  function requestSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDirection((current) => current === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortDirection(key === "date" ? "desc" : "asc");
+    }
+  }
 
   return (
     <div>
@@ -57,10 +107,20 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
             : `${roleMatchesShown} of ${roleMatchesAll.length} roles`}
         </p>
         <table>
-          <thead><tr><th>Role</th><th>Company</th><th>Craft</th><th>Level</th><th>Low</th><th>Mid</th><th>High</th></tr></thead>
+          <thead>
+            <tr>{SORT_HEADERS.map(({ key, label }) => {
+              const active = sortKey === key;
+              const indicator = active ? (sortDirection === "asc" ? "↑" : "↓") : "↕";
+              return <th key={key} aria-sort={active ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}>
+                <button type="button" className="table-sort" onClick={() => requestSort(key)}>
+                  {label} <span aria-hidden="true">{indicator}</span>
+                </button>
+              </th>;
+            })}</tr>
+          </thead>
           <tbody>{roleMatches.map((p, i) =>
             <tr key={i}>
-              <td>{p.role}</td><td>{p.company}</td><td>{p.craft}</td><td>{p.level}</td>
+              <td>{monthYear(p.year, p.month)}</td><td>{p.role}</td><td>{p.company}</td><td>{p.craft}</td><td>{p.level}</td>
               <td>{eur(p.lowEur)}</td><td>{eur(p.midEur)}</td><td>{eur(p.highEur)}</td>
             </tr>)}
           </tbody>

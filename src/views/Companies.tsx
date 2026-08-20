@@ -3,20 +3,46 @@ import { Posting } from "../data/types";
 import { companyLeaderboard } from "../data/aggregate";
 import { eur, eurK } from "../format";
 
-type SortKey = "count" | "medianComp";
+type SortKey = "company" | "count" | "medianComp";
+type SortDirection = "asc" | "desc";
 
 export function Companies({ postings }: { postings: Posting[] }) {
   const [sort, setSort] = useState<SortKey>("count");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
 
   const board = useMemo(() => {
     const b = companyLeaderboard(postings);
     const f = q ? b.filter((r) => r.company.toLowerCase().includes(q.toLowerCase())) : b;
-    return [...f].sort((a, b2) =>
-      sort === "count" ? b2.count - a.count : (b2.medianComp ?? -1) - (a.medianComp ?? -1)
-    );
-  }, [postings, sort, q]);
+    return [...f].sort((a, b2) => {
+      const aValue = sort === "company" ? a.company : sort === "count" ? a.count : a.medianComp;
+      const bValue = sort === "company" ? b2.company : sort === "count" ? b2.count : b2.medianComp;
+      const aMissing = aValue == null;
+      const bMissing = bValue == null;
+      if (aMissing || bMissing) {
+        if (aMissing && bMissing) return 0;
+        return aMissing ? 1 : -1;
+      }
+      const comparison = typeof aValue === "number" && typeof bValue === "number"
+        ? aValue - bValue
+        : String(aValue).localeCompare(String(bValue), undefined, { sensitivity: "base" });
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+  }, [postings, sort, sortDirection, q]);
+
+  function requestSort(key: SortKey) {
+    if (key === sort) {
+      setSortDirection((current) => current === "asc" ? "desc" : "asc");
+    } else {
+      setSort(key);
+      setSortDirection("desc");
+    }
+  }
+
+  function sortIndicator(key: SortKey): string {
+    return sort === key ? (sortDirection === "asc" ? "↑" : "↓") : "↕";
+  }
 
   const detail = selected ? postings.filter((p) => p.company === selected) : [];
 
@@ -26,9 +52,21 @@ export function Companies({ postings }: { postings: Posting[] }) {
         <input placeholder="Search company…" value={q} onChange={(e) => setQ(e.target.value)} />
         <table>
           <thead><tr>
-            <th onClick={() => setSort("count")}>Company</th>
-            <th onClick={() => setSort("count")}>Postings ↓</th>
-            <th onClick={() => setSort("medianComp")}>Median comp</th>
+            <th aria-sort={sort === "company" ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}>
+              <button type="button" className="table-sort" onClick={() => requestSort("company")}>
+                Company <span aria-hidden="true">{sortIndicator("company")}</span>
+              </button>
+            </th>
+            <th aria-sort={sort === "count" ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}>
+              <button type="button" className="table-sort" onClick={() => requestSort("count")}>
+                Postings <span aria-hidden="true">{sortIndicator("count")}</span>
+              </button>
+            </th>
+            <th aria-sort={sort === "medianComp" ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}>
+              <button type="button" className="table-sort" onClick={() => requestSort("medianComp")}>
+                Median comp <span aria-hidden="true">{sortIndicator("medianComp")}</span>
+              </button>
+            </th>
             <th>Crafts</th>
           </tr></thead>
           <tbody>
