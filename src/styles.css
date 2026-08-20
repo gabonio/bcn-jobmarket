@@ -10,6 +10,68 @@ nav button.active { background: #1a1a2e; color: #fff; }
 .filter { display: flex; flex-direction: column; font-size: 12px; }
 .filter select { min-width: 140px; height: 90px; }
 .muted { color: #667; font-size: 13px; }
+
+.checkbox-filter { position: relative; }
+.checkbox-filter-toggle {
+  min-width: 140px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 12px;
+  color: #1a1a2e;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+.checkbox-filter-toggle:hover { border-color: #999; }
+.checkbox-filter-toggle[aria-expanded="true"] { border-color: #1a1a2e; }
+.checkbox-filter-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 20;
+  min-width: 220px;
+  max-width: 320px;
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+}
+.checkbox-filter-search {
+  width: 100%;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  font: inherit;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.checkbox-filter-actions { display: flex; justify-content: flex-end; margin-bottom: 4px; }
+.checkbox-filter-clear {
+  background: none;
+  border: none;
+  color: #4a5bd4;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.checkbox-filter-clear:hover { text-decoration: underline; }
+.checkbox-filter-list { max-height: 240px; overflow-y: auto; }
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.checkbox-row:hover { background: #f2f3f7; }
+.checkbox-row.selected { background: #eef0fc; font-weight: 600; }
+.checkbox-row input { cursor: pointer; }
+.checkbox-filter-empty { padding: 6px; font-size: 13px; color: #667; }
 .kpis { display: flex; flex-wrap: wrap; gap: 12px; }
 .kpi { background: #fff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 12px 16px; min-width: 130px; }
 .kpi .value { font-size: 24px; font-weight: 700; }
