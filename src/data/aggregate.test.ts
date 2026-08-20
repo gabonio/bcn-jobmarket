@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import {
   percentiles, applyFilters, compByMonthYear, volumeByMonthYear,
-  companyLeaderboard, topCompaniesForCraft, compBy, EMPTY_FILTERS,
+  companyLeaderboard, topCompaniesForCraft, compBy, countBy, EMPTY_FILTERS,
 } from "./aggregate";
 import { Posting } from "./types";
 
@@ -108,5 +108,25 @@ describe("compBy", () => {
     const be = out.find((d) => d.key === "Backend")!;
     expect(be.n).toBe(2);
     expect(be.median).toBe(60000);
+  });
+});
+
+describe("countBy", () => {
+  test("counts postings per dimension including comp-less rows, sorted desc", () => {
+    const out = countBy([
+      p({ craft: "Backend", midEur: 50000 }),
+      p({ craft: "Backend", midEur: undefined }),
+      p({ craft: "Data", midEur: 60000 }),
+    ], "craft");
+    expect(out[0]).toEqual({ key: "Backend", count: 2 });
+    expect(out[1]).toEqual({ key: "Data", count: 1 });
+  });
+
+  test("ties broken alphabetically by key", () => {
+    const out = countBy([
+      p({ craft: "Data" }),
+      p({ craft: "Backend" }),
+    ], "craft");
+    expect(out.map((d) => d.key)).toEqual(["Backend", "Data"]);
   });
 });

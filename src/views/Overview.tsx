@@ -2,7 +2,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
 import { Posting } from "../data/types";
-import { companyLeaderboard, compBy, distinct, percentiles } from "../data/aggregate";
+import { companyLeaderboard, countBy, distinct, percentiles } from "../data/aggregate";
 import { eurK } from "../format";
 
 export function Overview({ postings }: { postings: Posting[] }) {
@@ -10,12 +10,10 @@ export function Overview({ postings }: { postings: Posting[] }) {
   const crafts = distinct(postings, (p) => p.craft).length;
   const mids = postings.map((p) => p.midEur).filter((v): v is number => v != null);
   const medianComp = mids.length ? percentiles(mids, [50])[0] : null;
-  const craftMix = compBy(postings, "craft")
-    .map((d) => ({ craft: d.key, count: d.n }))
-    .sort((a, b) => b.count - a.count);
-  const modalityMix = Object.entries(
-    postings.reduce<Record<string, number>>((a, p) => ({ ...a, [p.modality]: (a[p.modality] ?? 0) + 1 }), {})
-  ).map(([modality, count]) => ({ modality, count }));
+  const craftMix = countBy(postings, "craft")
+    .map((r) => ({ craft: r.key, count: r.count }));
+  const modalityMix = countBy(postings, "modality")
+    .map((r) => ({ modality: r.key, count: r.count }));
 
   return (
     <div>
@@ -23,7 +21,7 @@ export function Overview({ postings }: { postings: Posting[] }) {
         <Kpi label="Postings" value={String(postings.length)} />
         <Kpi label="Companies" value={String(companies)} />
         <Kpi label="Crafts" value={String(crafts)} />
-        <Kpi label="Median comp" value={medianComp ? eurK(medianComp) : "—"} />
+        <Kpi label="Median comp" value={eurK(medianComp)} />
         <Kpi label="Top company" value={companyLeaderboard(postings)[0]?.company ?? "—"} />
       </div>
       <div className="card">

@@ -126,6 +126,17 @@ export interface DimStat {
   key: string; low: number; p25: number; median: number; p75: number; high: number; n: number;
 }
 
+export function countBy(postings: Posting[], dim: "craft" | "levelFamily" | "modality" | "level" | "location"): { key: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const p of postings) {
+    const key = String(p[dim]);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key));
+}
+
 export function compBy(postings: Posting[], dim: "craft" | "levelFamily" | "modality"): DimStat[] {
   const groups = new Map<string, Posting[]>();
   for (const p of postings) {
