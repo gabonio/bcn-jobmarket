@@ -97,4 +97,14 @@ describe("normalizeRows", () => {
     expect(out[0].midEur).toBeCloseTo(92000);
     expect(out[0].currency).toBe("USD");
   });
+
+  // Regression: the real Google Sheet header row has an EMPTY Date cell
+  // (e.g. `"",Company,Role,Craft,...`), so the "date" sentinel guard never
+  // matches it and the header used to leak in as a junk posting.
+  test("skips the real-sheet header row (empty Date cell)", () => {
+    const realHeader = ["","Company","Role","Craft","Level","Location","Modality","Currency","Low end","Mid","High end","RSU","Bonus"];
+    const out = normalizeRows([realHeader, row]);
+    expect(out).toHaveLength(1);
+    expect(out.some((p) => p.company === "Company")).toBe(false);
+  });
 });

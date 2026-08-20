@@ -50,7 +50,7 @@ export function Companies({ postings }: { postings: Posting[] }) {
             <tbody>
               {detail.map((p, i) => (
                 <tr key={i}>
-                  <td>{p.date ? p.date.toISOString().slice(0, 10) : "—"}</td>
+                  <td>{p.date ? p.date.toLocaleDateString("en-CA") : "—"}</td>
                   <td>{p.role}</td><td>{p.craft}</td><td>{p.level}</td><td>{p.modality}</td>
                   <td>{eur(p.midEur)}</td>
                 </tr>

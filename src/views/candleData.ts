@@ -8,14 +8,11 @@ export function colorForYear(year: number): string {
   return PALETTE[((year % PALETTE.length) + PALETTE.length) % PALETTE.length];
 }
 
-export const YEAR_COLORS = {} as Record<number, string>;
-
 export interface CandleRow { month: number; monthLabel: string; [k: string]: number | string; }
 
 export function buildCandleData(postings: Posting[]): { rows: CandleRow[]; years: number[] } {
   const cells = compByMonthYear(postings);
   const years = [...new Set(cells.map((c) => c.year))].sort();
-  years.forEach((y) => (YEAR_COLORS[y] = colorForYear(y)));
   const rows: CandleRow[] = MONTHS.map((label, i) => ({ month: i + 1, monthLabel: label }));
   for (const c of cells) {
     const row = rows[c.month - 1];

@@ -4,6 +4,7 @@ import {
 } from "recharts";
 import { CandleRow, colorForYear } from "../views/candleData";
 import { eurK } from "../format";
+import { MIN_N } from "../data/aggregate";
 
 interface Props { rows: CandleRow[]; years: number[]; }
 
@@ -20,19 +21,33 @@ function makeCandle(year: number) {
     const p25 = payload[`y${year}_p25`];
     const p75 = payload[`y${year}_p75`];
     const median = payload[`y${year}_median`];
+    const n = payload[`y${year}_n`];
     if (high == null) return <g />;
+    const lowN = typeof n === "number" && n < MIN_N;
     const { y: ay, height: ah, domainMin, domainMax } = background as any;
     const scale = (v: number) => ay + ah * (1 - (v - domainMin) / (domainMax - domainMin));
     const cx = x + width / 2;
     const boxTop = scale(p75), boxBottom = scale(p25);
     return (
       <g>
-        <line x1={cx} x2={cx} y1={scale(high)} y2={scale(low)} stroke={color} strokeWidth={1.5} />
+        <line
+          x1={cx} x2={cx} y1={scale(high)} y2={scale(low)}
+          stroke={color} strokeWidth={1.5}
+          strokeDasharray={lowN ? "3 3" : undefined}
+          opacity={lowN ? 0.5 : 1}
+        />
         <rect
           x={x + width * 0.15} width={width * 0.7} y={boxTop} height={Math.max(1, boxBottom - boxTop)}
-          fill={color} fillOpacity={0.35} stroke={color}
+          fill={color} fillOpacity={lowN ? 0.15 : 0.35} stroke={color}
+          strokeDasharray={lowN ? "3 3" : undefined}
+          opacity={lowN ? 0.5 : 1}
         />
-        <line x1={x + width * 0.15} x2={x + width * 0.85} y1={scale(median)} y2={scale(median)} stroke={color} strokeWidth={2} />
+        <line
+          x1={x + width * 0.15} x2={x + width * 0.85} y1={scale(median)} y2={scale(median)}
+          stroke={color} strokeWidth={2}
+          strokeDasharray={lowN ? "3 3" : undefined}
+          opacity={lowN ? 0.5 : 1}
+        />
       </g>
     );
   };

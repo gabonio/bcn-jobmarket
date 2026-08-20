@@ -62,7 +62,8 @@ export function normalizeRows(rows: RawRow[]): Posting[] {
   for (const r of rows) {
     const c = (i: number) => (r[i] ?? "").trim();
     if (r.every((x) => !(x ?? "").trim())) continue;      // empty
-    if (c(0).toLowerCase() === HEADER_SENTINEL) continue; // header
+    if (c(0).toLowerCase() === HEADER_SENTINEL) continue; // header (Date sentinel)
+    if (c(1).toLowerCase() === "company" && c(2).toLowerCase() === "role") continue; // header (structural; Date cell may be empty)
     if (!c(0) && !c(1) && c(7).toUpperCase() === "AVG") continue; // stray AVG
     if (!c(1)) continue;                                  // no company => not a data row
 

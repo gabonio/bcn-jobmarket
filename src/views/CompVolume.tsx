@@ -4,6 +4,7 @@ import {
 import { Posting } from "../data/types";
 import { buildCandleData, buildVolumeData, colorForYear } from "./candleData";
 import { CandleChart } from "../components/CandleChart";
+import { MIN_N } from "../data/aggregate";
 
 export function CompVolume({ postings }: { postings: Posting[] }) {
   const candle = buildCandleData(postings);
@@ -12,7 +13,10 @@ export function CompVolume({ postings }: { postings: Posting[] }) {
     <div>
       <div className="card">
         <h3>Compensation by month (median comp; box = p25–p75; wick = low–high)</h3>
-        <p className="muted">Candles dodged and colored by year. Months with no data are blank.</p>
+        <p className="muted">
+          Candles dodged and colored by year. Months with no data are blank.
+          Faded/dashed candles have fewer than {MIN_N} samples.
+        </p>
         <CandleChart rows={candle.rows} years={candle.years} />
       </div>
       <div className="card">
