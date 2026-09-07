@@ -48,6 +48,11 @@ function comparePostings(a: Posting, b: Posting, key: SortKey, direction: SortDi
   return direction === "asc" ? comparison : -comparison;
 }
 
+function postingRecencyValue(posting: Posting): number {
+  if (posting.year != null && posting.month != null) return posting.year * 12 + posting.month;
+  return posting.date?.getTime() ?? Number.NEGATIVE_INFINITY;
+}
+
 export function RolesCrafts({ postings }: { postings: Posting[] }) {
   const crafts = useMemo(() => distinct(postings, (p) => p.craft).sort(), [postings]);
   const levels = useMemo(() => distinct(postings, (p) => p.level).sort(levelSort), [postings]);
@@ -76,7 +81,19 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
   const hiringPostings = useMemo(() => postings.filter((p) =>
     (!craft || p.craft === craft) && (!level || p.level === level)
   ), [postings, craft, level]);
-  const top = useMemo(() => companyLeaderboard(hiringPostings).slice(0, 15), [hiringPostings]);
+  const top = useMemo(() => {
+    const latestByCompany = new Map<string, Posting>();
+    for (const posting of hiringPostings) {
+      const current = latestByCompany.get(posting.company);
+      if (!current || postingRecencyValue(posting) > postingRecencyValue(current)) {
+        latestByCompany.set(posting.company, posting);
+      }
+    }
+    return companyLeaderboard(hiringPostings).slice(0, 15).map((company) => ({
+      ...company,
+      mostRecent: monthYear(latestByCompany.get(company.company)?.year, latestByCompany.get(company.company)?.month),
+    }));
+  }, [hiringPostings]);
   const roleMatchesAll = q
     ? hiringPostings.filter((p) => p.role.toLowerCase().includes(q.toLowerCase()))
     : hiringPostings;
@@ -129,7 +146,7 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
           <BarChart data={craftCounts.sort((a, b) => b.count - a.count)}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="craft" interval={0} height={craftAxisHeight} tick={<WrappedAxisTick />} /><YAxis /><Tooltip contentStyle={TOOLTIP_CONTENT_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
-            <Bar className="clickable-chart" dataKey="count" fill="#4c6ef5" onClick={selectCraft} />
+            <Bar className="clickable-chart" dataKey="count" fill="#2563eb" onClick={selectCraft} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -156,10 +173,10 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
           </label>
         </div>
         <table>
-          <thead><tr><th>Company</th><th>Postings</th></tr></thead>
+          <thead><tr><th>Company</th><th>Postings</th><th>Most recent</th></tr></thead>
           <tbody>
-            {top.map((r) => <tr key={r.company}><td>{r.company}</td><td>{r.count}</td></tr>)}
-            {top.length === 0 && <tr><td colSpan={2}>No postings match these filters.</td></tr>}
+            {top.map((r) => <tr key={r.company}><td>{r.company}</td><td>{r.count}</td><td>{r.mostRecent}</td></tr>)}
+            {top.length === 0 && <tr><td colSpan={3}>No postings match these filters.</td></tr>}
           </tbody>
         </table>
       </div>

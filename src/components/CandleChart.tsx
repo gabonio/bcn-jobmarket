@@ -129,8 +129,8 @@ function CandleTooltip({ active, payload, label, years }: any) {
     <div className="chart-tooltip">
       <strong>{label}</strong>
       {years.map((y: number) => row[`y${y}_median`] != null && (
-        <div key={y} style={{ color: colorForYear(y) }}>
-          {y}: median {eurK(row[`y${y}_median`])}, highest {eurK(row[`y${y}_high`])}, lowest {eurK(row[`y${y}_low`])}, n={row[`y${y}_n`]}
+        <div key={y} className="chart-tooltip-series">
+          <span className="chart-tooltip-year" style={{ color: colorForYear(y) }}>{y}</span>: median {eurK(row[`y${y}_median`])}, highest {eurK(row[`y${y}_high`])}, lowest {eurK(row[`y${y}_low`])}, n={row[`y${y}_n`]}
         </div>
       ))}
     </div>

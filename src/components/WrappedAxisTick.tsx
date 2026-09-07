@@ -39,7 +39,7 @@ export function WrappedAxisTick({ x = 0, y = 0, payload, maxChars = 14 }: Props)
       <text
         transform="rotate(-30)"
         textAnchor="end"
-        fill="#667"
+        fill="#667085"
         fontSize={14}
       >
         {lines.map((line, index) => (

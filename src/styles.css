@@ -1,82 +1,103 @@
 * { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, sans-serif; color: #1a1a2e; background: #f7f8fa; }
-.app { max-width: 1100px; margin: 0 auto; padding: 16px; }
-.loading { padding: 40px; text-align: center; }
-.app-header h1 { margin: 0 0 4px; }
-.app-source { margin: 0 0 10px; }
-.app-source a { color: #4a5bd4; font-weight: 600; text-decoration: none; }
-.app-source a:hover { text-decoration: underline; }
+:root {
+  color-scheme: light;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-soft: #eaf2ff;
+  --text: #17233c;
+  --muted: #667085;
+  --surface: #ffffff;
+  --surface-subtle: #f7f9fc;
+  --page: #f5f7fb;
+  --border: #d9e0ec;
+  --border-strong: #becbe0;
+  --shadow-1: 0 2px 8px rgba(23, 35, 60, 0.07);
+  --shadow-2: 0 10px 28px rgba(23, 35, 60, 0.12);
+}
+body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--text); background: var(--page); -webkit-font-smoothing: antialiased; }
+.app { max-width: 1160px; margin: 0 auto; padding: 22px 20px 40px; }
+.loading { min-height: 100vh; display: grid; place-items: center; padding: 40px; color: var(--muted); background: var(--page); }
+.app-header { padding: 6px 4px 14px; }
+.app-header h1 { margin: 0 0 6px; font-size: clamp(25px, 3vw, 34px); line-height: 1.15; letter-spacing: -0.035em; }
+.card h3 { margin: 0 0 12px; color: var(--text); font-size: 18px; line-height: 1.25; letter-spacing: -0.02em; }
+.app-source { margin: 0 0 18px; }
+.app-source a { color: var(--primary); font-weight: 700; text-decoration: none; }
+.app-source a:hover { color: var(--primary-dark); text-decoration: underline; }
 button, input:not([type="checkbox"]), select {
   font: inherit;
 }
 button {
-  color: #1a1a2e;
-  background: #fff;
-  border: 1px solid #d9dee8;
-  border-radius: 10px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   cursor: pointer;
-  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease, color 160ms ease;
 }
 input:not([type="checkbox"]), select {
-  color: #1a1a2e;
-  background: #fff;
-  border: 1px solid #d9dee8;
-  border-radius: 10px;
-  padding: 8px 10px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 9px 11px;
 }
 button:hover {
-  border-color: #aeb8c8;
-  background: #fbfcfe;
+  border-color: #aebbd0;
+  background: var(--surface-subtle);
 }
 button:active { transform: translateY(1px); }
 button:focus-visible,
 input:not([type="checkbox"]):focus-visible,
 select:focus-visible {
   outline: 0;
-  border-color: #4c6ef5;
-  box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.16);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
 }
-nav button { margin-right: 6px; padding: 8px 13px; }
-nav button.active { background: #1a1a2e; border-color: #1a1a2e; color: #fff; }
-nav button.active:hover { background: #252541; border-color: #252541; }
-.banner { background: #fff3cd; border: 1px solid #ffe69c; padding: 6px 10px; border-radius: 6px; margin: 6px 0; }
-.filterbar { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+nav { display: flex; flex-wrap: wrap; gap: 8px; }
+nav button { margin: 0; padding: 9px 15px; color: #42516a; font-size: 13px; font-weight: 700; border-radius: 999px; }
+nav button.active { color: #fff; background: var(--primary); border-color: var(--primary); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.24); }
+nav button.active:hover { color: #fff; background: var(--primary-dark); border-color: var(--primary-dark); }
+.banner { color: #7a4b00; background: #fff8e1; border: 1px solid #f3d58b; padding: 10px 13px; border-radius: 12px; margin: 8px 0 14px; box-shadow: var(--shadow-1); }
+.filterbar { display: flex; flex-direction: column; gap: 14px; margin: 12px 0 16px; padding: 14px; background: rgba(255, 255, 255, 0.82); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-1); }
 .filterbar-dimensions { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
-.filter { display: flex; flex-direction: column; font-size: 12px; }
-.muted { color: #667; font-size: 13px; }
+.filter { display: flex; flex-direction: column; gap: 5px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .01em; }
+.muted { color: var(--muted); font-size: 13px; }
 
 .time-filterbar {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #e3e6ea;
+  padding-top: 13px;
+  border-top: 1px solid var(--border);
 }
-.time-filter-title { margin-right: 2px; padding-bottom: 9px; color: #1a1a2e; font-size: 14px; font-weight: 700; }
-.time-filter { gap: 4px; color: #667; font-weight: 600; }
-.time-filter select { min-width: 136px; color: #1a1a2e; font-weight: 400; }
+.time-filter-title { margin-right: 2px; padding-bottom: 10px; color: var(--text); font-size: 14px; font-weight: 800; letter-spacing: -0.01em; }
+.time-filter { gap: 5px; color: var(--muted); font-weight: 700; }
+.time-filter select { min-width: 136px; color: var(--text); font-weight: 500; }
 
 .clear-filters-button {
-  padding: 8px 13px;
-  color: #4a3f8f;
-  background: #f4f2ff;
-  border-color: #d9d2ff;
+  padding: 9px 14px;
+  color: var(--primary-dark);
+  background: var(--primary-soft);
+  border-color: #b9d1ff;
+  font-size: 13px;
+  font-weight: 700;
   white-space: nowrap;
 }
-.clear-filters-button:hover { color: #342b73; background: #ece9ff; border-color: #bdb3ff; }
+.clear-filters-button:hover { color: #153d8f; background: #dceaff; border-color: #8eb5ff; }
 
 .checkbox-filter { position: relative; }
 .checkbox-filter-toggle {
   min-width: 140px;
-  padding: 8px 10px;
+  padding: 9px 11px;
   font-size: 12px;
-  color: #1a1a2e;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
+  font-weight: 600;
   text-align: left;
 }
-.checkbox-filter-toggle:hover { border-color: #aeb8c8; }
-.checkbox-filter-toggle[aria-expanded="true"] { border-color: #1a1a2e; }
+.checkbox-filter-toggle:hover { border-color: var(--border-strong); background: var(--surface-subtle); }
+.checkbox-filter-toggle[aria-expanded="true"] { color: var(--primary-dark); border-color: var(--primary); background: var(--primary-soft); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.11); }
 .checkbox-filter-panel {
   position: absolute;
   top: calc(100% + 4px);
@@ -85,11 +106,11 @@ nav button.active:hover { background: #252541; border-color: #252541; }
   width: max-content;
   min-width: 240px;
   max-width: min(360px, calc(100vw - 24px));
-  background: #fff;
-  border: 1px solid #e3e6ea;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-2);
+  padding: 10px;
 }
 .checkbox-filter-search {
   width: 100%;
@@ -97,20 +118,21 @@ nav button.active:hover { background: #252541; border-color: #252541; }
   margin-bottom: 6px;
   font-size: 13px;
 }
-.checkbox-filter-actions { display: flex; justify-content: flex-end; margin-bottom: 4px; }
+.checkbox-filter-actions { display: flex; justify-content: flex-end; margin-bottom: 6px; }
 .checkbox-filter-clear {
-  color: #4a5bd4;
+  color: var(--primary);
   font-size: 12px;
-  background: #f4f6ff;
-  border-color: #dfe3ff;
-  border-radius: 8px;
-  padding: 4px 8px;
+  background: var(--primary-soft);
+  border-color: #cfe0ff;
+  border-radius: 10px;
+  padding: 5px 9px;
+  font-weight: 700;
 }
-.checkbox-filter-clear:hover { color: #3344b5; background: #ecefff; border-color: #c8cffd; }
+.checkbox-filter-clear:hover { color: var(--primary-dark); background: #dceaff; border-color: #8eb5ff; }
 .checkbox-filter-list { max-height: 240px; overflow-y: auto; }
 .checkbox-filter-group-label {
   padding: 7px 6px 3px;
-  color: #667;
+  color: var(--muted);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .04em;
@@ -120,69 +142,83 @@ nav button.active:hover { background: #252541; border-color: #252541; }
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 6px;
+  padding: 6px;
   font-size: 13px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
 }
 .checkbox-row span { min-width: 0; overflow-wrap: anywhere; }
-.checkbox-row:hover { background: #f2f3f7; }
-.checkbox-row.selected { background: #eef0fc; font-weight: 600; }
+.checkbox-row:hover { background: #eef5ff; }
+.checkbox-row.selected { color: var(--primary-dark); background: var(--primary-soft); font-weight: 600; }
 .checkbox-row input { cursor: pointer; }
-.checkbox-filter-empty { padding: 6px; font-size: 13px; color: #667; }
-.kpis { display: flex; flex-wrap: wrap; gap: 12px; }
-.kpi { background: #fff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 12px 16px; min-width: 130px; }
-.kpi .value { font-size: 24px; font-weight: 700; }
-.kpi .label { font-size: 12px; color: #667; }
-table { width: 100%; border-collapse: collapse; background: #fff; }
-th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+.checkbox-filter-empty { padding: 6px; font-size: 13px; color: var(--muted); }
+.kpis { display: flex; flex-wrap: wrap; gap: 14px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; min-width: 140px; box-shadow: var(--shadow-1); }
+.kpi .value { color: var(--text); font-size: 26px; font-weight: 750; letter-spacing: -0.03em; }
+.kpi .label { font-size: 12px; color: var(--muted); }
+table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--surface); }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e8edf5; font-size: 13px; }
+thead th { color: var(--muted); background: #fafbfe; font-size: 12px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+tbody tr { transition: background 120ms ease; }
+tbody tr:hover { background: #f7faff; }
+tbody tr:last-child td { border-bottom: 0; }
 th { cursor: pointer; }
 .table-sort {
   padding: 0;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: var(--text);
   text-align: left;
   white-space: nowrap;
 }
-.table-sort:hover { background: #f2f4f8; border-color: transparent; }
-.table-sort span { color: #667; font-size: 11px; }
-.table-sort:focus-visible { outline: 0; border-color: transparent; box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.16); border-radius: 6px; }
+.table-sort:hover { color: var(--primary); background: transparent; border-color: transparent; }
+.table-sort span { color: var(--primary); font-size: 11px; }
+.table-sort:focus-visible { outline: 0; border-color: transparent; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18); border-radius: 8px; }
 .hiring-filter-header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
 .hiring-filter-header h3 { margin: 0; }
-.hiring-filter { display: inline-flex; align-items: center; gap: 6px; color: #667; font-size: 12px; font-weight: 600; }
-.hiring-filter select { color: #1a1a2e; font-weight: 400; }
+.hiring-filter { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
+.hiring-filter select { color: var(--text); font-weight: 500; }
 .role-search-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px 24px; }
 .role-search-controls { flex: 1 1 620px; min-width: min(100%, 320px); }
 .role-search-controls h3 { margin-top: 0; }
 .role-search-input { width: min(680px, 100%); }
 .role-search-count { margin-bottom: 0; }
 .role-salary-summary { margin-left: auto; text-align: right; }
-.role-salary-summary-title { display: block; margin-bottom: 6px; color: #667; font-size: 12px; font-weight: 600; }
+.role-salary-summary-title { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
 .role-salary-stats { display: flex; gap: 8px; }
-.role-salary-stat { min-width: 96px; padding: 8px 10px; background: #fbfcfe; border: 1px solid #e3e6ea; border-radius: 8px; }
+.role-salary-stat { min-width: 96px; padding: 9px 10px; background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 10px; }
 .role-salary-stat-wrap { position: relative; }
-.role-salary-stat-median { position: relative; display: block; color: #1a1a2e; font: inherit; text-align: right; cursor: help; }
-.role-salary-stat-median:hover { background: #f2f4f8; border-color: #cbd3e0; }
-.role-salary-stat-median:focus-visible { outline: 0; border-color: #4c6ef5; box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.16); }
-.role-salary-tooltip { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; width: max-content; max-width: min(300px, calc(100vw - 32px)); padding: 9px 11px; color: #fff; background: #1a1a2e; border: 1px solid #333; border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18); font-size: 12px; text-align: left; }
+.role-salary-stat-median { position: relative; display: block; color: var(--text); font: inherit; text-align: right; cursor: help; }
+.role-salary-stat-median:hover { background: var(--primary-soft); border-color: #cbd3e0; }
+.role-salary-stat-median:focus-visible { outline: 0; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18); }
+.role-salary-tooltip { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; width: max-content; max-width: min(300px, calc(100vw - 32px)); padding: 10px 12px; color: #fff; background: #17233c; border: 1px solid #304462; border-radius: 10px; box-shadow: var(--shadow-2); font-size: 12px; text-align: left; }
 .role-salary-tooltip strong, .role-salary-tooltip span { display: block; }
 .role-salary-tooltip span { margin-top: 3px; color: #d9dbea; }
-.role-salary-stat > span { display: block; color: #667; font-size: 11px; }
+.role-salary-stat > span { display: block; color: var(--muted); font-size: 11px; }
 .role-salary-stat-label { display: block !important; text-align: right; }
-.role-salary-info-icon { position: absolute; top: 7px; left: 8px; display: inline-grid !important; place-items: center; width: 14px; height: 14px; color: #4c6ef5 !important; border: 1px solid #4c6ef5; border-radius: 50%; font-size: 10px !important; font-style: normal; font-weight: 700; line-height: 1; }
-.role-salary-stat-median:hover .role-salary-info-icon { color: #fff !important; background: #4c6ef5; }
+.role-salary-info-icon { position: absolute; top: 7px; left: 8px; display: inline-grid !important; place-items: center; width: 14px; height: 14px; color: var(--primary) !important; border: 1px solid var(--primary); border-radius: 50%; font-size: 10px !important; font-style: normal; font-weight: 700; line-height: 1; }
+.role-salary-stat-median:hover .role-salary-info-icon { color: #fff !important; background: var(--primary); }
 .role-salary-stat strong { display: block; margin-top: 2px; font-size: 14px; }
-.card { background: #fff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 12px; margin: 12px 0; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin: 16px 0; box-shadow: var(--shadow-1); }
 .chart-tooltip {
-  background: #1a1a2e;
+  background: #17233c;
   color: #fff;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #333;
+  padding: 10px 12px;
+  max-width: min(430px, calc(100vw - 32px));
+  border-radius: 10px;
+  border: 1px solid #304462;
+  box-shadow: var(--shadow-2);
   font-size: 13px;
+  line-height: 1.4;
   margin: 0;
 }
+.chart-tooltip > strong { display: block; margin-bottom: 4px; color: #fff; font-size: 14px; }
+.chart-tooltip-series { color: #f8fafc; line-height: 1.45; }
+.chart-tooltip-year { font-weight: 800; }
+.recharts-cartesian-axis-tick-value { fill: var(--muted); }
+.recharts-cartesian-axis-line, .recharts-cartesian-axis-tick-line { stroke: var(--border-strong); }
+.recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line { stroke: #d7dee9; }
+.recharts-legend-item-text { fill: var(--text); }
 .clickable-chart .recharts-bar-rectangle,
 .clickable-chart .recharts-bar-rectangle * { cursor: pointer; }
 .drillthrough-backdrop {
@@ -192,8 +228,8 @@ th { cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  background: rgba(26, 26, 46, 0.45);
+  padding: 20px;
+  background: rgba(23, 35, 60, 0.5);
 }
 .drillthrough-modal {
   display: flex;
@@ -201,19 +237,29 @@ th { cursor: pointer; }
   width: min(1400px, 100%);
   max-height: min(720px, 90vh);
   overflow: hidden;
-  background: #fff;
-  border: 1px solid #dfe3e8;
-  border-radius: 10px;
-  box-shadow: 0 18px 50px rgba(26, 26, 46, 0.25);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(23, 35, 60, 0.28);
 }
 .drillthrough-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 18px 20px 12px;
-  border-bottom: 1px solid #eee;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--border);
 }
+.drillthrough-header-content {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  min-width: 0;
+}
+.drillthrough-header-content > div:first-child { min-width: 0; flex: 1 1 380px; }
+.drillthrough-salary-summary { flex: 0 1 auto; }
 .drillthrough-header h3 { margin: 0 0 4px; }
 .drillthrough-header p { margin: 0; }
 .drillthrough-search {
@@ -227,10 +273,23 @@ th { cursor: pointer; }
   width: 36px;
   height: 36px;
   flex: 0 0 36px;
-  color: #667;
+  color: var(--muted);
   font-size: 22px;
   line-height: 1;
 }
-.drillthrough-close:hover { color: #1a1a2e; }
+.drillthrough-close:hover { color: var(--text); background: var(--primary-soft); border-color: #cfe0ff; }
 .drillthrough-table-wrap { overflow: auto; }
 .drillthrough-table-wrap table { min-width: 1150px; }
+
+@media (max-width: 720px) {
+  .app { padding: 16px 12px 32px; }
+  .card { padding: 14px; border-radius: 14px; }
+  .drillthrough-backdrop { padding: 12px; }
+  .drillthrough-header { flex-wrap: wrap; padding: 16px; }
+  .drillthrough-header-content { flex: 1 1 calc(100% - 52px); flex-direction: column; gap: 16px; }
+  .drillthrough-salary-summary { width: 100%; margin-left: 0; text-align: left; }
+  .drillthrough-salary-summary .role-salary-stats { flex-wrap: wrap; }
+  .role-search-header { gap: 14px; }
+  .role-salary-summary { width: 100%; margin-left: 0; text-align: left; }
+  .role-salary-label { text-align: left; }
+}

@@ -54,7 +54,7 @@ export function Overview({ postings }: { postings: Posting[] }) {
               tick={<WrappedAxisTick />}
             />
             <YAxis /><Tooltip content={<CraftMixTooltip stats={craftSalary} />} />
-            <Bar className="clickable-chart" dataKey="count" fill="#4c6ef5" onClick={(entry) => selectChartValue(entry, "craft")} />
+            <Bar className="clickable-chart" dataKey="count" fill="#2563eb" onClick={(entry) => selectChartValue(entry, "craft")} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -64,7 +64,7 @@ export function Overview({ postings }: { postings: Posting[] }) {
           <BarChart data={modalityMix}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="modality" /><YAxis /><Tooltip content={<ModalityTooltip stats={modalitySalary} />} />
-            <Bar className="clickable-chart" dataKey="count" fill="#12b886" onClick={(entry) => selectChartValue(entry, "modality")} />
+            <Bar className="clickable-chart" dataKey="count" fill="#0f9d91" onClick={(entry) => selectChartValue(entry, "modality")} />
           </BarChart>
         </ResponsiveContainer>
       </div>

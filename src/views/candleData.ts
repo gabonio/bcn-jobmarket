@@ -2,7 +2,7 @@ import { Posting } from "../data/types";
 import { compByMonthYear, volumeByMonthYear } from "../data/aggregate";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const PALETTE = ["#e8590c", "#1c7ed6", "#2f9e44", "#ae3ec9", "#f08c00"];
+const PALETTE = ["#f97316", "#2563eb", "#0f9d91", "#7c3aed", "#eab308"];
 
 export function colorForYear(year: number): string {
   return PALETTE[((year % PALETTE.length) + PALETTE.length) % PALETTE.length];

@@ -53,7 +53,7 @@ export function Compensation({ postings }: { postings: Posting[] }) {
             <YAxis type="category" dataKey="key" width={110} />
             <Tooltip content={<RangeTooltip />} />
             <Bar className="clickable-chart" dataKey="base" stackId="a" fill="transparent" onClick={selectCompensation} />
-            <Bar className="clickable-chart" dataKey="band" stackId="a" fill="#4c6ef5" onClick={selectCompensation} />
+            <Bar className="clickable-chart" dataKey="band" stackId="a" fill="#2563eb" onClick={selectCompensation} />
           </BarChart>
         </ResponsiveContainer>
       </div>
