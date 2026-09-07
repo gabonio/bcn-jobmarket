@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { eur, eurK, levelName, monthYear } from "./format";
+import { eur, eurK, levelGroup, levelName, levelSort, monthYear } from "./format";
 
 describe("eur", () => {
   test("formats thousands with € and k", () => {
@@ -20,5 +20,14 @@ describe("eur", () => {
     expect(levelName("M1")).toBe("Team Lead");
     expect(levelName("P-5")).toBe("Senior Product Manager");
     expect(levelName("Other")).toBe("Other");
+  });
+
+  test("groups and orders human-readable levels by career progression", () => {
+    expect(levelGroup("Junior")).toBe("Individual contributors");
+    expect(levelGroup("Senior Manager")).toBe("Management");
+    expect(levelGroup("Senior Product Manager")).toBe("Product");
+    expect(["Senior", "Junior", "Director", "Manager"].sort(levelSort)).toEqual([
+      "Junior", "Senior", "Manager", "Director",
+    ]);
   });
 });

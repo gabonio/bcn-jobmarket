@@ -23,8 +23,11 @@ export default function App() {
 
   return (
     <div className="app">
-      <header>
-        <h1>BCN Tech Job Market</h1>
+      <header className="app-header">
+        <h1>BCN Engineering Job Market</h1>
+        <p className="app-source muted">
+          Source data: <a href="https://bcneng.org/" target="_blank" rel="noreferrer">BCN Engineering</a> public Slack channel <strong>#hiring-job-board</strong>
+        </p>
         {result?.source === "cache" && (
           <div className="banner">Showing cached data (live fetch failed: {result.error})</div>
         )}

@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { loadPostings, LoadResult } from "../data/load";
 import { Posting } from "../data/types";
 import { distinct } from "../data/aggregate";
+import { levelSort } from "../format";
 
 export function filterOptions(postings: Posting[]) {
   const s = (arr: string[]) => [...arr].sort((a, b) => a.localeCompare(b));
   return {
     companies: s(distinct(postings, (p) => p.company)),
     crafts: s(distinct(postings, (p) => p.craft)),
-    levels: s(distinct(postings, (p) => p.level)),
+    levels: distinct(postings, (p) => p.level).sort(levelSort),
     levelFamilies: s(distinct(postings, (p) => p.levelFamily)),
     modalities: s(distinct(postings, (p) => p.modality)),
     locations: s(distinct(postings, (p) => p.location)),

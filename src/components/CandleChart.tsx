@@ -2,17 +2,20 @@ import {
   ComposedChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   CartesianGrid, Legend,
 } from "recharts";
+import { useMemo, useState } from "react";
 import { CandleRow, colorForYear } from "../views/candleData";
-import { eurK } from "../format";
+import { Posting } from "../data/types";
+import { eurK, monthYear } from "../format";
 import { MIN_N } from "../data/aggregate";
+import { JobPostsDialog } from "./JobPostsDialog";
 
-interface Props { rows: CandleRow[]; years: number[]; }
+interface Props { rows: CandleRow[]; years: number[]; postings: Posting[]; }
 
 // Custom shape: draw a candle from the row payload for a given year.
 // Recharts computes `background` for every bar rect as the full plotting area
 // ({ y: yAxis.y, height: yAxis.height }); we inject the y-domain so the shape
 // can map a comp value -> pixel independently of the bar's own dataKey scaling.
-function makeCandle(year: number) {
+function makeCandle(year: number, onClick: (month: number, year: number) => void) {
   return (props: any) => {
     const { x, width, background, payload } = props;
     const color = colorForYear(year);
@@ -29,7 +32,12 @@ function makeCandle(year: number) {
     const cx = x + width / 2;
     const boxTop = scale(p75), boxBottom = scale(p25);
     return (
-      <g>
+      <g
+        role="button"
+        aria-label={`Open ${monthYear(year, payload.month)} compensation postings`}
+        style={{ cursor: "pointer" }}
+        onClick={() => onClick(payload.month, year)}
+      >
         <line
           x1={cx} x2={cx} y1={scale(high)} y2={scale(low)}
           stroke={color} strokeWidth={1.5}
@@ -53,40 +61,64 @@ function makeCandle(year: number) {
   };
 }
 
-export function CandleChart({ rows, years }: Props) {
+export function CandleChart({ rows, years, postings }: Props) {
+  const [selected, setSelected] = useState<{ month: number; year: number } | null>(null);
   const allVals: number[] = [];
   rows.forEach((r) => years.forEach((y) => {
     [r[`y${y}_low`], r[`y${y}_high`]].forEach((v) => typeof v === "number" && allVals.push(v));
   }));
   const domainMin = allVals.length ? Math.min(...allVals) * 0.95 : 0;
   const domainMax = allVals.length ? Math.max(...allVals) * 1.05 : 1;
+  const selectedPostings = useMemo(
+    () => selected
+      ? postings
+        .filter((p) =>
+          p.year === selected.year && p.month === selected.month && p.midEur != null
+        )
+        .sort((a, b) => a.company.localeCompare(b.company) || a.role.localeCompare(b.role))
+      : [],
+    [postings, selected]
+  );
 
   return (
-    <ResponsiveContainer width="100%" height={360}>
-      <ComposedChart data={rows} barCategoryGap="20%">
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="monthLabel" />
-        <YAxis
-          domain={[domainMin, domainMax]}
-          allowDataOverflow
-          tickFormatter={(v) => eurK(v as number)}
-          width={70}
-        />
-        <Tooltip content={<CandleTooltip years={years} />} />
-        <Legend />
-        {years.map((y) => (
-          <Bar
-            key={y}
-            dataKey={`y${y}_p25`}
-            name={String(y)}
-            fill={colorForYear(y)}
-            isAnimationActive={false}
-            shape={(props: any) =>
-              makeCandle(y)({ ...props, background: { ...props.background, domainMin, domainMax } })}
+    <>
+      <ResponsiveContainer width="100%" height={360}>
+        <ComposedChart data={rows} barCategoryGap="20%">
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="monthLabel" />
+          <YAxis
+            domain={[domainMin, domainMax]}
+            allowDataOverflow
+            tickFormatter={(v) => eurK(v as number)}
+            width={70}
           />
-        ))}
-      </ComposedChart>
-    </ResponsiveContainer>
+          <Tooltip content={<CandleTooltip years={years} />} />
+          <Legend />
+          {years.map((y) => (
+            <Bar
+              key={y}
+              dataKey={`y${y}_p25`}
+              name={String(y)}
+              fill={colorForYear(y)}
+              isAnimationActive={false}
+              shape={(props: any) =>
+                makeCandle(y, (month, year) => setSelected({ month, year }))({
+                  ...props,
+                  background: { ...props.background, domainMin, domainMax },
+                })}
+            />
+          ))}
+        </ComposedChart>
+      </ResponsiveContainer>
+      {selected && (
+        <JobPostsDialog
+          title={`Job posts · ${monthYear(selected.year, selected.month)}`}
+          description={`${selectedPostings.length} compensation postings make up this candle.`}
+          postings={selectedPostings}
+          onClose={() => setSelected(null)}
+        />
+      )}
+    </>
   );
 }
 
@@ -98,7 +130,7 @@ function CandleTooltip({ active, payload, label, years }: any) {
       <strong>{label}</strong>
       {years.map((y: number) => row[`y${y}_median`] != null && (
         <div key={y} style={{ color: colorForYear(y) }}>
-          {y}: median {eurK(row[`y${y}_median`])} (p25 {eurK(row[`y${y}_p25`])}–p75 {eurK(row[`y${y}_p75`])}), n={row[`y${y}_n`]}
+          {y}: median {eurK(row[`y${y}_median`])}, highest {eurK(row[`y${y}_high`])}, lowest {eurK(row[`y${y}_low`])}, n={row[`y${y}_n`]}
         </div>
       ))}
     </div>

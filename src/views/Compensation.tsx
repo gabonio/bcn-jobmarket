@@ -5,22 +5,33 @@ import {
 import { Posting, FX } from "../data/types";
 import { compBy, MIN_N } from "../data/aggregate";
 import { eurK } from "../format";
+import { JobPostsDialog } from "../components/JobPostsDialog";
 
 type Dim = "craft" | "levelFamily" | "modality";
 
 export function Compensation({ postings }: { postings: Posting[] }) {
   const [dim, setDim] = useState<Dim>("craft");
+  const [selected, setSelected] = useState<string | null>(null);
   const stats = useMemo(() => compBy(postings, dim), [postings, dim]);
   // Represent range as a stacked bar: base = p25 (transparent), band = p75-p25.
   const data = useMemo(
     () =>
       stats.map((d) => ({
         key: d.key + (d.n < MIN_N ? " *" : ""),
+        dimensionValue: d.key,
         base: d.p25, band: Math.max(0, d.p75 - d.p25),
         median: d.median, low: d.low, high: d.high, n: d.n,
       })),
     [stats]
   );
+  const selectedPostings = selected
+    ? postings.filter((p) => String(p[dim]) === selected && p.midEur != null)
+    : [];
+
+  function selectCompensation(entry: any) {
+    const value = entry?.payload?.dimensionValue ?? entry?.dimensionValue;
+    if (typeof value === "string") setSelected(value);
+  }
 
   return (
     <div>
@@ -41,11 +52,19 @@ export function Compensation({ postings }: { postings: Posting[] }) {
             <XAxis type="number" tickFormatter={(v) => eurK(v as number)} />
             <YAxis type="category" dataKey="key" width={110} />
             <Tooltip content={<RangeTooltip />} />
-            <Bar dataKey="base" stackId="a" fill="transparent" />
-            <Bar dataKey="band" stackId="a" fill="#4c6ef5" />
+            <Bar dataKey="base" stackId="a" fill="transparent" onClick={selectCompensation} />
+            <Bar dataKey="band" stackId="a" fill="#4c6ef5" onClick={selectCompensation} />
           </BarChart>
         </ResponsiveContainer>
       </div>
+      {selected && (
+        <JobPostsDialog
+          title={`Job posts · ${selected}`}
+          description={`${selectedPostings.length} compensation postings make up this selection.`}
+          postings={selectedPostings}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </div>
   );
 }

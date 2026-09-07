@@ -6,6 +6,8 @@ import { Posting } from "../data/types";
 import { countBy, distinct, topCompaniesForCraft } from "../data/aggregate";
 import { TOOLTIP_CONTENT_STYLE, TOOLTIP_ITEM_STYLE, TOOLTIP_LABEL_STYLE } from "../chartTheme";
 import { eur, levelName, monthYear } from "../format";
+import { JobPostsDialog } from "../components/JobPostsDialog";
+import { axisHeightForLabels, WrappedAxisTick } from "../components/WrappedAxisTick";
 
 const ROLE_MATCH_CAP = 200;
 type SortKey = "date" | "role" | "company" | "craft" | "level" | "lowEur" | "midEur" | "highEur";
@@ -52,11 +54,14 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
   const [q, setQ] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [selectedCraft, setSelectedCraft] = useState<string | null>(null);
 
   // Use countBy (not compBy) so postings without a midEur value are still
   // counted — compBy drops comp-less rows, which would undercount crafts
   // (same class of bug fixed in Task 6 for the Overview).
   const craftCounts = countBy(postings, "craft").map((d) => ({ craft: d.key, count: d.count }));
+  const craftAxisHeight = axisHeightForLabels(craftCounts.map((d) => d.craft));
+  const craftChartHeight = 210 + craftAxisHeight;
   const top = craft ? topCompaniesForCraft(postings, craft).slice(0, 15) : [];
   const roleMatchesAll = q
     ? postings.filter((p) => p.role.toLowerCase().includes(q.toLowerCase()))
@@ -65,6 +70,14 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
     .sort((a, b) => comparePostings(a, b, sortKey, sortDirection))
     .slice(0, ROLE_MATCH_CAP);
   const roleMatchesShown = Math.min(roleMatchesAll.length, ROLE_MATCH_CAP);
+  const selectedPostings = selectedCraft
+    ? postings.filter((p) => p.craft === selectedCraft)
+    : [];
+
+  function selectCraft(entry: any) {
+    const craftValue = entry?.payload?.craft ?? entry?.craft;
+    if (typeof craftValue === "string") setSelectedCraft(craftValue);
+  }
 
   function requestSort(key: SortKey) {
     if (key === sortKey) {
@@ -79,11 +92,11 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
     <div>
       <div className="card">
         <h3>Postings per craft</h3>
-        <ResponsiveContainer width="100%" height={280}>
+        <ResponsiveContainer width="100%" height={craftChartHeight}>
           <BarChart data={craftCounts.sort((a, b) => b.count - a.count)}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="craft" angle={-30} textAnchor="end" height={70} /><YAxis /><Tooltip contentStyle={TOOLTIP_CONTENT_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
-            <Bar dataKey="count" fill="#4c6ef5" />
+            <XAxis dataKey="craft" interval={0} height={craftAxisHeight} tick={<WrappedAxisTick />} /><YAxis /><Tooltip contentStyle={TOOLTIP_CONTENT_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+            <Bar dataKey="count" fill="#4c6ef5" onClick={selectCraft} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -126,6 +139,14 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
           </tbody>
         </table>
       </div>
+      {selectedCraft && (
+        <JobPostsDialog
+          title={`Job posts · ${selectedCraft}`}
+          description={`${selectedPostings.length} postings make up the ${selectedCraft} selection.`}
+          postings={selectedPostings}
+          onClose={() => setSelectedCraft(null)}
+        />
+      )}
     </div>
   );
 }

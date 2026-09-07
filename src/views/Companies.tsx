@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { Posting } from "../data/types";
 import { companyLeaderboard } from "../data/aggregate";
-import { eur, eurK, levelName } from "../format";
+import { eurK } from "../format";
+import { JobPostsDialog } from "../components/JobPostsDialog";
 
 type SortKey = "company" | "count" | "medianComp";
 type SortDirection = "asc" | "desc";
@@ -44,7 +45,7 @@ export function Companies({ postings }: { postings: Posting[] }) {
     return sort === key ? (sortDirection === "asc" ? "↑" : "↓") : "↕";
   }
 
-  const detail = selected ? postings.filter((p) => p.company === selected) : [];
+  const selectedPostings = selected ? postings.filter((p) => p.company === selected) : [];
 
   return (
     <div>
@@ -81,21 +82,12 @@ export function Companies({ postings }: { postings: Posting[] }) {
         </table>
       </div>
       {selected && (
-        <div className="card">
-          <h3>{selected} — {detail.length} postings <button onClick={() => setSelected(null)}>close</button></h3>
-          <table>
-            <thead><tr><th>Date</th><th>Role</th><th>Craft</th><th>Level</th><th>Modality</th><th>Low</th><th>Mid</th><th>High</th></tr></thead>
-            <tbody>
-              {detail.map((p, i) => (
-                <tr key={i}>
-                  <td>{p.date ? p.date.toLocaleDateString("en-CA") : "—"}</td>
-                  <td>{p.role}</td><td>{p.craft}</td><td>{levelName(p.level)}</td><td>{p.modality}</td>
-                  <td>{eur(p.lowEur)}</td><td>{eur(p.midEur)}</td><td>{eur(p.highEur)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <JobPostsDialog
+          title={`Job posts · ${selected}`}
+          description={`${selectedPostings.length} postings make up this company selection.`}
+          postings={selectedPostings}
+          onClose={() => setSelected(null)}
+        />
       )}
     </div>
   );

@@ -17,7 +17,7 @@ export function FilterBar({ postings, filters, onChange }: Props) {
       <CheckboxMultiSelect label="Modality" options={opts.modalities} selected={filters.modalities} onChange={(v) => set("modalities", v)} />
       <CheckboxMultiSelect label="Location" options={opts.locations} selected={filters.locations} onChange={(v) => set("locations", v)} />
       <CheckboxMultiSelect label="Currency" options={opts.currencies} selected={filters.currencies} onChange={(v) => set("currencies", v)} />
-      <button onClick={() => onChange(EMPTY_FILTERS)}>Clear all</button>
+      <button type="button" className="clear-filters-button" onClick={() => onChange(EMPTY_FILTERS)}>Clear all</button>
     </div>
   );
 }

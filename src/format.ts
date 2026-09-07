@@ -46,10 +46,66 @@ export function levelName(level: string): string {
   return LEVEL_NAMES[normalized] ?? level;
 }
 
+const INDIVIDUAL_CONTRIBUTOR_LEVELS = new Set([
+  "Junior", "Mid-level", "Senior", "Staff", "Principal", "Senior Principal", "Distinguished", "Fellow",
+]);
+const MANAGEMENT_LEVELS = new Set([
+  "Team Lead", "Manager", "Senior Manager", "Director", "Senior Director", "VP", "CTO",
+]);
+const PRODUCT_LEVELS = new Set([
+  "Product Analyst", "Product Owner", "Senior Product Owner", "Product Manager",
+  "Senior Product Manager", "Product Lead", "VP Product",
+]);
+
+const LEVEL_GROUP_ORDER: Record<string, number> = {
+  "Individual contributors": 0,
+  Management: 1,
+  Product: 2,
+  Other: 3,
+};
+
+const LEVEL_ORDER: Record<string, number> = {
+  Junior: 0,
+  "Mid-level": 1,
+  Senior: 2,
+  Staff: 3,
+  Principal: 4,
+  "Senior Principal": 5,
+  Distinguished: 6,
+  Fellow: 7,
+  "Team Lead": 0,
+  Manager: 1,
+  "Senior Manager": 2,
+  Director: 3,
+  "Senior Director": 4,
+  VP: 5,
+  CTO: 6,
+  "Product Analyst": 0,
+  "Product Owner": 1,
+  "Senior Product Owner": 2,
+  "Product Manager": 3,
+  "Senior Product Manager": 4,
+  "Product Lead": 5,
+  "VP Product": 6,
+};
+
 export function levelGroup(level: string): string {
-  const normalized = level.trim().toUpperCase();
-  if (normalized.startsWith("IC-")) return "IC";
-  if (normalized.startsWith("M-")) return "Management";
-  if (normalized.startsWith("P-")) return "Product";
+  const displayName = levelName(level);
+  if (INDIVIDUAL_CONTRIBUTOR_LEVELS.has(displayName)) return "Individual contributors";
+  if (MANAGEMENT_LEVELS.has(displayName)) return "Management";
+  if (PRODUCT_LEVELS.has(displayName)) return "Product";
   return "Other";
+}
+
+export function levelSort(a: string, b: string): number {
+  const aGroup = levelGroup(a);
+  const bGroup = levelGroup(b);
+  const groupComparison = LEVEL_GROUP_ORDER[aGroup] - LEVEL_GROUP_ORDER[bGroup];
+  if (groupComparison !== 0) return groupComparison;
+
+  const aName = levelName(a);
+  const bName = levelName(b);
+  const levelComparison = (LEVEL_ORDER[aName] ?? Number.MAX_SAFE_INTEGER) -
+    (LEVEL_ORDER[bName] ?? Number.MAX_SAFE_INTEGER);
+  return levelComparison || aName.localeCompare(bName, undefined, { sensitivity: "base" });
 }
