@@ -143,6 +143,8 @@ th { cursor: pointer; }
   font-size: 13px;
   margin: 0;
 }
+.clickable-chart .recharts-bar-rectangle,
+.clickable-chart .recharts-bar-rectangle * { cursor: pointer; }
 .drillthrough-backdrop {
   position: fixed;
   inset: 0;

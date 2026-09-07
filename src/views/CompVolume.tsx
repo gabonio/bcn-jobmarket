@@ -48,7 +48,7 @@ export function CompVolume({ postings }: { postings: Posting[] }) {
             <Tooltip contentStyle={TOOLTIP_CONTENT_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
             <Legend />
             {vol.years.map((y) => (
-              <Bar key={y} dataKey={`y${y}`} name={String(y)} fill={colorForYear(y)} onClick={(entry) => selectVolume(entry, y)} />
+              <Bar className="clickable-chart" key={y} dataKey={`y${y}`} name={String(y)} fill={colorForYear(y)} onClick={(entry) => selectVolume(entry, y)} />
             ))}
           </ComposedChart>
         </ResponsiveContainer>

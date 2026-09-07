@@ -96,7 +96,7 @@ export function RolesCrafts({ postings }: { postings: Posting[] }) {
           <BarChart data={craftCounts.sort((a, b) => b.count - a.count)}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="craft" interval={0} height={craftAxisHeight} tick={<WrappedAxisTick />} /><YAxis /><Tooltip contentStyle={TOOLTIP_CONTENT_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
-            <Bar dataKey="count" fill="#4c6ef5" onClick={selectCraft} />
+            <Bar className="clickable-chart" dataKey="count" fill="#4c6ef5" onClick={selectCraft} />
           </BarChart>
         </ResponsiveContainer>
       </div>
