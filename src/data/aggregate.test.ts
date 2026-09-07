@@ -44,6 +44,23 @@ describe("applyFilters", () => {
     const out = applyFilters(data, { ...EMPTY_FILTERS, crafts: ["Backend"], companies: ["B"] });
     expect(out).toHaveLength(0);
   });
+  test("date range is inclusive by month", () => {
+    const out = applyFilters([
+      p({ year: 2025, month: 5 }),
+      p({ year: 2025, month: 6 }),
+      p({ year: 2026, month: 1 }),
+    ], { ...EMPTY_FILTERS, dateFrom: "2025-06", dateTo: "2025-12" });
+    expect(out).toHaveLength(1);
+    expect(out[0].month).toBe(6);
+  });
+  test("bounded date filters exclude postings without a date", () => {
+    const out = applyFilters([p({ year: null, month: null }), p({ year: 2025, month: 5 })], {
+      ...EMPTY_FILTERS,
+      dateFrom: "2025-01",
+    });
+    expect(out).toHaveLength(1);
+    expect(out[0].month).toBe(5);
+  });
 });
 
 describe("compByMonthYear", () => {

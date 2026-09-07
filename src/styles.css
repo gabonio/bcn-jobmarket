@@ -40,9 +40,22 @@ nav button { margin-right: 6px; padding: 8px 13px; }
 nav button.active { background: #1a1a2e; border-color: #1a1a2e; color: #fff; }
 nav button.active:hover { background: #252541; border-color: #252541; }
 .banner { background: #fff3cd; border: 1px solid #ffe69c; padding: 6px 10px; border-radius: 6px; margin: 6px 0; }
-.filterbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; align-items: flex-end; }
+.filterbar { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.filterbar-dimensions { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
 .filter { display: flex; flex-direction: column; font-size: 12px; }
 .muted { color: #667; font-size: 13px; }
+
+.time-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e3e6ea;
+}
+.time-filter-title { margin-right: 2px; padding-bottom: 9px; color: #1a1a2e; font-size: 14px; font-weight: 700; }
+.time-filter { gap: 4px; color: #667; font-weight: 600; }
+.time-filter select { min-width: 136px; color: #1a1a2e; font-weight: 400; }
 
 .clear-filters-button {
   padding: 8px 13px;
@@ -69,8 +82,9 @@ nav button.active:hover { background: #252541; border-color: #252541; }
   top: calc(100% + 4px);
   left: 0;
   z-index: 20;
-  min-width: 220px;
-  max-width: 320px;
+  width: max-content;
+  min-width: 240px;
+  max-width: min(360px, calc(100vw - 24px));
   background: #fff;
   border: 1px solid #e3e6ea;
   border-radius: 8px;
@@ -111,6 +125,7 @@ nav button.active:hover { background: #252541; border-color: #252541; }
   border-radius: 4px;
   cursor: pointer;
 }
+.checkbox-row span { min-width: 0; overflow-wrap: anywhere; }
 .checkbox-row:hover { background: #f2f3f7; }
 .checkbox-row.selected { background: #eef0fc; font-weight: 600; }
 .checkbox-row input { cursor: pointer; }
@@ -133,6 +148,31 @@ th { cursor: pointer; }
 .table-sort:hover { background: #f2f4f8; border-color: transparent; }
 .table-sort span { color: #667; font-size: 11px; }
 .table-sort:focus-visible { outline: 0; border-color: transparent; box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.16); border-radius: 6px; }
+.hiring-filter-header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+.hiring-filter-header h3 { margin: 0; }
+.hiring-filter { display: inline-flex; align-items: center; gap: 6px; color: #667; font-size: 12px; font-weight: 600; }
+.hiring-filter select { color: #1a1a2e; font-weight: 400; }
+.role-search-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px 24px; }
+.role-search-controls { flex: 1 1 620px; min-width: min(100%, 320px); }
+.role-search-controls h3 { margin-top: 0; }
+.role-search-input { width: min(680px, 100%); }
+.role-search-count { margin-bottom: 0; }
+.role-salary-summary { margin-left: auto; text-align: right; }
+.role-salary-summary-title { display: block; margin-bottom: 6px; color: #667; font-size: 12px; font-weight: 600; }
+.role-salary-stats { display: flex; gap: 8px; }
+.role-salary-stat { min-width: 96px; padding: 8px 10px; background: #fbfcfe; border: 1px solid #e3e6ea; border-radius: 8px; }
+.role-salary-stat-wrap { position: relative; }
+.role-salary-stat-median { position: relative; display: block; color: #1a1a2e; font: inherit; text-align: right; cursor: help; }
+.role-salary-stat-median:hover { background: #f2f4f8; border-color: #cbd3e0; }
+.role-salary-stat-median:focus-visible { outline: 0; border-color: #4c6ef5; box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.16); }
+.role-salary-tooltip { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; width: max-content; max-width: min(300px, calc(100vw - 32px)); padding: 9px 11px; color: #fff; background: #1a1a2e; border: 1px solid #333; border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18); font-size: 12px; text-align: left; }
+.role-salary-tooltip strong, .role-salary-tooltip span { display: block; }
+.role-salary-tooltip span { margin-top: 3px; color: #d9dbea; }
+.role-salary-stat > span { display: block; color: #667; font-size: 11px; }
+.role-salary-stat-label { display: block !important; text-align: right; }
+.role-salary-info-icon { position: absolute; top: 7px; left: 8px; display: inline-grid !important; place-items: center; width: 14px; height: 14px; color: #4c6ef5 !important; border: 1px solid #4c6ef5; border-radius: 50%; font-size: 10px !important; font-style: normal; font-weight: 700; line-height: 1; }
+.role-salary-stat-median:hover .role-salary-info-icon { color: #fff !important; background: #4c6ef5; }
+.role-salary-stat strong { display: block; margin-top: 2px; font-size: 14px; }
 .card { background: #fff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 12px; margin: 12px 0; }
 .chart-tooltip {
   background: #1a1a2e;

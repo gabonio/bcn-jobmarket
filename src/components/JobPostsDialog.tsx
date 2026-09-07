@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Posting } from "../data/types";
-import { eur, levelName } from "../format";
+import { eur, levelName, monthYear } from "../format";
 
 type SortKey = "date" | "company" | "role" | "craft" | "level" | "location" | "modality" | "lowEur" | "midEur" | "highEur";
 type SortDirection = "asc" | "desc";
@@ -123,7 +123,7 @@ export function JobPostsDialog({ title, description, postings, onClose }: Props)
             <tbody>
               {sortedPostings.map((posting, index) => (
                 <tr key={`${posting.company}-${posting.role}-${index}`}>
-                  <td>{posting.date ? posting.date.toLocaleDateString("en-CA") : "—"}</td>
+                  <td>{monthYear(posting.year, posting.month)}</td>
                   <td>{posting.company}</td>
                   <td>{posting.role}</td>
                   <td>{posting.craft}</td>
@@ -145,6 +145,7 @@ export function JobPostsDialog({ title, description, postings, onClose }: Props)
 
 function searchableText(posting: Posting): string {
   return [
+    monthYear(posting.year, posting.month),
     posting.date?.toLocaleDateString("en-CA"),
     posting.company,
     posting.role,

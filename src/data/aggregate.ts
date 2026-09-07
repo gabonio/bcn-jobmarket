@@ -10,15 +10,32 @@ export interface Filters {
   modalities: string[];
   locations: string[];
   currencies: string[];
+  dateFrom: string;
+  dateTo: string;
 }
 
 export const EMPTY_FILTERS: Filters = {
   companies: [], crafts: [], levels: [], levelFamilies: [],
-  modalities: [], locations: [], currencies: [],
+  modalities: [], locations: [], currencies: [], dateFrom: "", dateTo: "",
 };
+
+function monthIndex(value: string): number | null {
+  const match = /^(\d{4})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  if (month < 1 || month > 12) return null;
+  return year * 12 + month - 1;
+}
+
+function postingMonthIndex(p: Posting): number | null {
+  return p.year != null && p.month != null ? p.year * 12 + p.month - 1 : null;
+}
 
 export function applyFilters(postings: Posting[], f: Filters): Posting[] {
   const has = (arr: string[], v: string) => arr.length === 0 || arr.includes(v);
+  const from = monthIndex(f.dateFrom);
+  const to = monthIndex(f.dateTo);
   return postings.filter((p) =>
     has(f.companies, p.company) &&
     has(f.crafts, p.craft) &&
@@ -26,7 +43,13 @@ export function applyFilters(postings: Posting[], f: Filters): Posting[] {
     has(f.levelFamilies, p.levelFamily) &&
     has(f.modalities, p.modality) &&
     has(f.locations, p.location) &&
-    has(f.currencies, p.currency)
+    has(f.currencies, p.currency) &&
+    (from == null && to == null
+      ? true
+      : (() => {
+        const month = postingMonthIndex(p);
+        return month != null && (from == null || month >= from) && (to == null || month <= to);
+      })())
   );
 }
 
